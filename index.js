@@ -40,3 +40,18 @@ app.listen(
     PORT,
     () => console.log(`It's alive! on http://localhost:${PORT}`)
 )
+
+app.get('/zar-dollar-er', async (req, res) => {
+
+    const extApiUrl = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json';
+    const response = await fetch(extApiUrl);
+
+    const data = await response.json();
+    const zarRate = data.usd.zar
+
+    res.status(200).send({
+        exchangeRate: zarRate,
+        currencyPair: "USD/ZAR",
+        lastUpdated: data.date
+    })
+});
