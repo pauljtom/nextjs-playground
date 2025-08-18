@@ -1,4 +1,5 @@
 // The file I'll be using to write my code in
+const crypto = require("crypto");
 
 const express = require('express');
 const app = express();
@@ -9,6 +10,17 @@ const PORT = 8080;
 // We run this function whenever the '/tshirt' ROUTE is requested
 
 app.use( express.json() ) //Apply middleware
+
+// For Vercel deployment
+module.exports = app;
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(
+        PORT,
+        () => console.log(`It's alive! on http://localhost:${PORT}`)
+    );
+}
 
 app.get('/tshirt', (req, res) => {
     res.status(200).send({
@@ -27,7 +39,7 @@ app.post('/tshirt/:id', (req, res) => {
     // WE need to setup MIDDLEWARE, to parse the JSON before hits the below 
 
     if ( !logo ) {
-        res.status(418).send({ message: 'Logo is required, dumbell!' })
+        return res.status(418).send({ message: 'Logo is required, dumbell!' })
     }
 
     res.send({
@@ -36,10 +48,6 @@ app.post('/tshirt/:id', (req, res) => {
 
 })
 
-app.listen(
-    PORT,
-    () => console.log(`It's alive! on http://localhost:${PORT}`)
-)
 
 app.get('/zar-dollar-er', async (req, res) => {
 
@@ -55,3 +63,29 @@ app.get('/zar-dollar-er', async (req, res) => {
         lastUpdated: data.date
     })
 });
+
+
+app.post('/token', (req, res) => {
+
+    const { username, password } = req.body;
+
+    if (!username) {
+        return res.status(401).send({ message: 'Invalid login credentials' });
+    }
+
+    if (!password) {
+        return res.status(401).send({ message: 'Invalid login credentials' });
+    }
+
+    if (password === "Password@2025!") {
+        const guid = crypto.randomBytes(16).toString("hex");
+        res.send({
+            token: `${guid}`
+        });
+    } else {
+        res.status(401).send({ message: 'Invalid login credentials' });
+    }
+
+})
+
+
