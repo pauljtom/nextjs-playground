@@ -1,5 +1,6 @@
 // The file I'll be using to write my code in
 const crypto = require("crypto");
+const cors = require('cors');
 
 const express = require('express');
 const app = express();
@@ -9,6 +10,7 @@ const PORT = 8080;
 // res = outgoing data
 // We run this function whenever the '/tshirt' ROUTE is requested
 
+app.use(cors()); // Enable CORS for all origins
 app.use( express.json() ) //Apply middleware
 
 // For Vercel deployment
